@@ -55,9 +55,7 @@ class ScriptEditor < FXMainWindow
 	    
 		path_utf8  = path.encode("UTF-8")
 
-        @project = Project.new(path_utf8)
-
-		
+    @project = Project.create(path_utf8)
 		
 		setup_list
 		@save_cmd.enabled = true
@@ -67,21 +65,12 @@ class ScriptEditor < FXMainWindow
 		@close_cmd.enabled = true
 		@search_cmd.enabled = true
 		@search_all_cmd.enabled = true
-		
+		@eval_button.enabled = true
 		
 		if @project.has_valid_game_path?
 			@play_button.enabled = true
 		end
 		
-		
-		#begin
-		#	for d in @data
-		#		p d[1]
-		#		eval(d[2])
-		#	end
-		#rescue  Exception => e  
-		#	p e
-		#end
 	end
 
 	
@@ -188,6 +177,12 @@ class ScriptEditor < FXMainWindow
 			play_release
 		end  
 		
+		@eval_button = FXButton.new(toolbar_frame, "Eval", nil)
+    @eval_button.enabled = false
+    @eval_button.connect(SEL_COMMAND) do  
+      eval_code
+    end  
+		
 		#BODY
 		horizontal_frame = FXHorizontalFrame.new(main_frame, :opts => LAYOUT_FILL)
 		@list = FXList.new(horizontal_frame, nil, 0,  LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH , 0,0, :width => 200)
@@ -201,7 +196,6 @@ class ScriptEditor < FXMainWindow
 		# Handle SEL_DND_MOTION messages from the canvas
 		self.connect(SEL_DND_ENTER) {
 			# Accept drops unconditionally (for now)
-			p "asdasd"
 			self.acceptDrop
 		}
 	end
@@ -225,7 +219,6 @@ class ScriptEditor < FXMainWindow
 		
 		@tabbook.removeAllPages
 		
-		
 		setup_list
 		
 		@save_cmd.enabled = false
@@ -236,6 +229,9 @@ class ScriptEditor < FXMainWindow
 		@search_all_cmd.enabled = false
 		@search_cmd.enabled = false
 		@close_cmd.enabled = false		
+		@eval_button.enabled = false
+		
+		@project.close
 	end
 	
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -280,20 +276,8 @@ class ScriptEditor < FXMainWindow
 	# Save current Script
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	def saveCurrentPage
-		if @tabbook.children.size > 0
-			page = @tabbook.currentPage
-			page.dirty = false
-			@tabbook.writeCurrentContent
-			
-			# This shouldn't be necessary
-			#for data in @data
-			#	if data[0] == page.id
-			#		data[2] = page.content
-			#		save_data
-			#		break
-			#	end
-			#end
-		end
+		@tabbook.writeCurrentContent
+		@project.save
 	end
 	
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -301,20 +285,7 @@ class ScriptEditor < FXMainWindow
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	def saveAllOpenPages
 		@tabbook.writeAllContents
-		
-		for page in @tabbook.openPages
-			page.dirty = false
-	
-			# This shouldn't be necessary
-            #for data in @data
-            #   if data[0] == page.id
-            #       data[2] = page.content
-            #       break
-            #   end
-            #end
-		end
-		
-		save_data
+		@project.save
 	end
 	
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -330,7 +301,7 @@ class ScriptEditor < FXMainWindow
 	# On Search Callback
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	def onSearchAll(str)
-		@searchAllResults.prepare(@data, str)
+		@searchAllResults.prepare(@project.scripts, str)
 		@searchAllResults.show(PLACEMENT_SCREEN)
 	end
 	
@@ -339,7 +310,7 @@ class ScriptEditor < FXMainWindow
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	def onSearchAllResult(script, position, lenght)
 		
-		if(data_id == nil or position == nil)
+		if(script == nil or position == nil)
 			return
 		end
 
@@ -352,6 +323,10 @@ class ScriptEditor < FXMainWindow
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	def play_release
 		system('"' + @gamePath + '"')
+	end
+	
+	def eval_code
+	  @project.eval
 	end
 end
 

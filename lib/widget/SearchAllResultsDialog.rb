@@ -6,15 +6,15 @@ include Fox
 #==============================================================================================
 class SearchStruct
 	
-	attr_reader :data_id
+	attr_reader :script
 	attr_reader :position
 	attr_reader :size
 	attr_reader :sample_text
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Object Initialization
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-	def initialize(data_id, position, size, sample_text)
-		@data_id = data_id
+	def initialize(script, position, size, sample_text)
+		@script = script
 		@position = position
 		@size = size
 		@sample_text = sample_text
@@ -46,18 +46,17 @@ class SearchAllResults < FXDialogBox
 		@table.defColumnWidth = 320
 
 		@listener = searchListener
-		#searchListener.call(searchResults[0].data_id, searchResults[0].positions[0], str.size)
 	end
 	
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# Prepare with data
+	# Prepare with scripts
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-	def prepare(dataList, str)
+	def prepare(scripts, str)
 		@searchResults = []
 		@str = str
 		
-		for data in dataList
-			results = search_in_content(data, str)
+		for script in scripts
+			results = search_in_content(script, str)
 			@searchResults.concat(results)
 		end		
 		
@@ -76,7 +75,7 @@ class SearchAllResults < FXDialogBox
 		for i in 0...@searchResults.size
 			result = @searchResults[i]
 			@table.setItemText(i, 0, result.sample_text)
-			@table.setRowText(i, result.data_id) 
+			@table.setRowText(i, result.script.name) 
 		end
 
 		@table.setColumnText(0, "Result")
@@ -85,13 +84,13 @@ class SearchAllResults < FXDialogBox
 	end
 	
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# Search str in data
+	# Search str in script
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-	def search_in_content(data, str)
+	def search_in_content(script, str)
 		results = []
 		i = 0
 		
-		content = data[2]
+		content = script.contents
 		
 		loop do
 			i = content.index(str, i+1)
@@ -105,7 +104,7 @@ class SearchAllResults < FXDialogBox
 			
 			sampleStr = content[sampleStart, sampleEnd - sampleStart]
 						
-			result = JMLSearchStruct.new(data[1], i, str.size, sampleStr)
+			result = SearchStruct.new(script, i, str.size, sampleStr)
 			
 			results.push(result)
 		end
@@ -118,6 +117,6 @@ class SearchAllResults < FXDialogBox
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	def on_item_selected(sender, sel, ptr)
 		result = @searchResults[ptr.row]
-		@listener.call(result.data_id, result.position, @str.size)
+		@listener.call(result.script, result.position, @str.size)
 	end
 end

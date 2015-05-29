@@ -2,8 +2,8 @@
 class Script
   
     attr_reader :id
-    attr_reader :name
-    attr_reader :contents  
+    attr_accessor :name
+    attr_accessor :contents
    
     def initialize(id, name, contents)
         @id = id

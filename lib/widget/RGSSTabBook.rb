@@ -30,7 +30,7 @@ class RGSSPage
 	end
 	
 	def writeCurrent()
-		@script.content = @scint.getText(@scint.getTextLength)
+		@script.contents = @scint.getText(@scint.getTextLength)
 	end
 	
 	def search(str)
@@ -61,7 +61,7 @@ class RGSSPage
 		
 		pos.downto(0){|previousPos|
 			
-			if @content[previousPos] == "\n"
+			if @script.contents[previousPos] == "\n"
 				lineBreaks += 1
 			end
 			
@@ -445,6 +445,7 @@ class RGSSTabBook < FXTabBook
 		index = self.current
 		page = @pages[index]
 		page.writeCurrent
+		page.dirty = false
 	end
 	
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -454,15 +455,16 @@ class RGSSTabBook < FXTabBook
 	def writeAllContents
 		for page in @pages
 			page.writeCurrent
+			page.dirty = false
 		end
 	end
 	
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Go to position
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-	def go_to(page_id, position, lenght)
+	def go_to(script_id, position, lenght)
 		for i in 0...@pages.size
-			if @pages[i].id == page_id
+			if @pages[i].script.id == script_id
 				self.setCurrent(i)
 				
 				@pages[i].gotoAndSelect(position, lenght)

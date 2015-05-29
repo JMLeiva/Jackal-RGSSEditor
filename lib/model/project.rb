@@ -3,13 +3,14 @@ require 'Pathname'
 require_relative 'script.rb'
 
 #==============================================================================================
-# RGSS Project (RMXP, RMVX, RMVX2)
+# RGSS Base Class Project (RMXP, RMVX, RMVX2)
 #==============================================================================================
 class Project
     
     attr_reader :path
     attr_reader :scripts #TODO create a safe iterable list?
-
+    
+    private
     def initialize(path)
         @path = path
         
@@ -26,7 +27,23 @@ class Project
             @scripts.push(script)
         end
         
+        load_rpg_data
+        
         file.close
+    end
+  
+    
+    def game_path
+        return Pathname.new(path).parent.parent.to_s + "\\Game.exe"
+    end
+    
+    public
+    def self.create(path)
+      case File.extname(path)
+        when ".rxdata"
+          return RMXP_Project.new(path)
+        end
+        
     end
     
     #-----------------------------------------------------------------------------------------------
@@ -48,15 +65,65 @@ class Project
     # Save
     #-----------------------------------------------------------------------------------------------
     def save
+      
+        raw_data_list = []
+      
+        for script in @scripts
+            raw_data = []
+            raw_data.push(script.id)
+            raw_data.push(script.name)
+            raw_data.push(script.contents)
+            raw_data_list.push(raw_data)
+        end
+      
         file = File.open(@path, "wb")
-        file.write Marshal.dump @data.map {
+        file.write Marshal.dump raw_data_list.map {
             |v| [v[0], v[1], Zlib.deflate(v[2])]
         }
         file.close
     end
     
-    private
-    def game_path
-        return Pathname.new(path).parent.parent.to_s + "\\Game.exe"
+    def eval
+        line_number = 0
+        script_name = ""
+        for script in @scripts#.reverse
+          
+          #line_number = 0
+          #script.contents.each_line do |line|
+          #  Kernel.eval(line, nil, script.name, line_number)
+          #  line_number += 1
+          #  p line_number
+          #end
+         
+          script_name = script.name
+          
+          begin
+            Kernel.eval(script.contents, binding, __FILE__, __LINE__)
+          rescue  Exception => e  
+            p script_name
+            p e
+            p line_number
+          end
+        end
+          
+    end
+end
+
+
+#==============================================================================================
+# RGSS RMXP Project
+#==============================================================================================
+class RMXP_Project < Project
+    def load_rpg_data
+      require_relative '.\RPG\XP\Win32API.rb'
+      require_relative '.\RPG\XP\Graphics.rb'
+      require_relative '.\RPG\XP\Viewport.rb'
+      require_relative '.\RPG\XP\Input.rb'
+      require_relative '.\RPG\XP\Sprite.rb'
+      require_relative '.\RPG\XP\Window.rb'
+      require_relative '.\RPG\XP\RPG_Actor.rb'
+      require_relative '.\RPG\XP\RPG_Animation.rb'
+      require_relative '.\RPG\XP\RPG_Cache.rb'
+      require_relative '.\RPG\XP\RPG_Sprite.rb'
     end
 end
