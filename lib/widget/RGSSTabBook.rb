@@ -338,33 +338,33 @@ class RGSSTabBook < FXTabBook
 		#Events
 		scint.connect(SEL_CHANGED,  method(:onTextChanged) )
 		
-		scint.connect(SEL_COMMAND) do |sender, sel, ptr|
+		#scint.connect(SEL_COMMAND) do |sender, sel, ptr|
 			
-			if  ptr.nmhdr.code == FXScintilla::SCN_CHARADDED
-				#p "--------------"
-				#p "CH: " + ptr.ch.to_s
-				#p "Fold LV Now: " + ptr.foldLevelNow.to_s
-				#p "Fold LV Prev: " + ptr.foldLevelPrev.to_s
-				#p "Leght: " +  ptr.length.to_s
-				#p "Line: " + ptr.line.to_s
-				#p "Lines Added: " + ptr.linesAdded.to_s
-				#p "List Type: " + ptr.listType.to_s
-				#p "LParam: " + ptr.lParam.to_s
-				#p "Margin: " + ptr.margin.to_s
-				#p "Message: " + ptr.message.to_s
-				#p "Modification Type: " + ptr.modificationType.to_s
-				#p "Modifiers: " + ptr.modifiers.to_s
-				#p "NMHDR idFrom: " + ptr.nmhdr.idFrom.to_s
-				#p "NMHDR code: " + ptr.nmhdr.code.to_s
-				#p "Text: " + ptr.text.to_s
-				#p "WParam: " + ptr.wParam.to_s
-				#p "X: " + ptr.x.to_s
-				#p "Y: " + ptr.y.to_s
-				#p "--------------"
-
-				scint.autoCShow(2, "end start")
-			end
-		end
+  		#if  ptr.nmhdr.code == FXScintilla::SCN_CHARADDED
+  				#p "--------------"
+  				#p "CH: " + ptr.ch.to_s
+  				#p "Fold LV Now: " + ptr.foldLevelNow.to_s
+  				#p "Fold LV Prev: " + ptr.foldLevelPrev.to_s
+  				#p "Leght: " +  ptr.length.to_s
+  				#p "Line: " + ptr.line.to_s
+  				#p "Lines Added: " + ptr.linesAdded.to_s
+  				#p "List Type: " + ptr.listType.to_s
+  				#p "LParam: " + ptr.lParam.to_s
+  				#p "Margin: " + ptr.margin.to_s
+  				#p "Message: " + ptr.message.to_s
+  				#p "Modification Type: " + ptr.modificationType.to_s
+  				#p "Modifiers: " + ptr.modifiers.to_s
+  				#p "NMHDR idFrom: " + ptr.nmhdr.idFrom.to_s
+  				#p "NMHDR code: " + ptr.nmhdr.code.to_s
+  				#p "Text: " + ptr.text.to_s
+  				#p "WParam: " + ptr.wParam.to_s
+  				#p "X: " + ptr.x.to_s
+  				#p "Y: " + ptr.y.to_s
+  				#p "--------------"
+  
+  			#	scint.autoCShow(2, "end start")
+  			#end
+		# end
 		
 		
 		self.setCurrent(@pages.size)
