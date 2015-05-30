@@ -19,17 +19,40 @@ class Sprite
   attr_accessor :tone
   
   def initialize(viewport = nil)
+    @bitmap = nil
+    @src_rect = Rect.new(0,0,24,24)
+    @visible = true
+    @x = 0
+    @y = 0
+    @z = 0
+    @ox = 0
+    @oy = 0
+    @zoom_x = 1
+    @zoom_y = 1
+    @angle = 0
+    @mirror = false
+    @bush_depth = false
+    @opacity = 255
+    @blend_type = 0
+    @color = Color.new(255,255,255)
+    @tone = Tone.new(255,255,255)
+    @viewport = viewport
+    
+    @disposed = false
   end
   
   def dispose
+    @disposed = true
   end
   
   def disposed?
+    @disposed
   end
   
   def viewport
+    @viewport
   end
-  
+    
   def flash(color, duration)
   end
   

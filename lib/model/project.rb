@@ -1,5 +1,6 @@
 require 'zlib'
 require 'Pathname'
+require 'stringio'
 require_relative 'script.rb'
 
 #==============================================================================================
@@ -84,10 +85,12 @@ class Project
     end
     
     def eval
-        line_number = 0
-        script_name = ""
         for script in @scripts#.reverse
           
+          #if script.name == "Main"
+          #  next
+          #end
+         
           #line_number = 0
           #script.contents.each_line do |line|
           #  Kernel.eval(line, nil, script.name, line_number)
@@ -95,14 +98,13 @@ class Project
           #  p line_number
           #end
          
-          script_name = script.name
-          
           begin
-            Kernel.eval(script.contents, binding, __FILE__, __LINE__)
+            instance_eval(script.contents, script.name, __LINE__)
+            
+            #Kernel.eval(str_file.read, proc.binding, str_file, __LINE__)
           rescue  Exception => e  
-            p script_name
             p e
-            p line_number
+            p e.backtrace
           end
         end
           
@@ -116,14 +118,22 @@ end
 class RMXP_Project < Project
     def load_rpg_data
       require_relative '.\RPG\XP\Win32API.rb'
+      require_relative '.\RPG\XP\RGSSError.rb'
       require_relative '.\RPG\XP\Graphics.rb'
+      require_relative '.\RPG\XP\Audio.rb'
+      require_relative '.\RPG\XP\Bitmap.rb'
+      require_relative '.\RPG\XP\Color.rb'
+      require_relative '.\RPG\XP\Font.rb'
+      require_relative '.\RPG\XP\Tone.rb'
+      require_relative '.\RPG\XP\Plane.rb'
+      require_relative '.\RPG\XP\Rect.rb'
+      require_relative '.\RPG\XP\Table.rb'
+      require_relative '.\RPG\XP\Tilemap.rb'
       require_relative '.\RPG\XP\Viewport.rb'
       require_relative '.\RPG\XP\Input.rb'
       require_relative '.\RPG\XP\Sprite.rb'
       require_relative '.\RPG\XP\Window.rb'
-      require_relative '.\RPG\XP\RPG_Actor.rb'
-      require_relative '.\RPG\XP\RPG_Animation.rb'
-      require_relative '.\RPG\XP\RPG_Cache.rb'
-      require_relative '.\RPG\XP\RPG_Sprite.rb'
+      require_relative '.\RPG\XP\RPGModule.rb'
+      require_relative '.\RPG\XP\Globals.rb'
     end
 end

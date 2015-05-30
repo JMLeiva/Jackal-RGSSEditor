@@ -18,15 +18,38 @@ class Window
   attr_accessor :conents_opacity
   
   def initialize(viewport = nil)
+    @windowskin = nil
+    @contents = Bitmap.new(32,32)
+    @stretch = false
+    @cursor_rect = Rect.new(0,0,0,0)
+    @active = true
+    @pause = false
+    @x = 0
+    @y = 0
+    @width = 0
+    @height = 0
+    @z = 0
+    @ox = 0
+    @oy = 0
+    @opacity = 255
+    @back_opacity = 255
+    @contents_opacity = 255
+   
+    @viewport = viewport
+    
+    @disposed = false
   end
   
   def dispose
+    @disposed = true
   end
   
   def disposed?
+    @disposed
   end
   
   def viewport
+    @viewport
   end
   
 end

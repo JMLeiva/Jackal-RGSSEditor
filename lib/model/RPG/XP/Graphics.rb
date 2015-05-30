@@ -3,16 +3,21 @@ module Graphics
   attr_accessor :frame_rate
   attr_accessor :frame_count
   
-  def update
+  @frame_rate = 60
+  @frame_count = 0
+  
+  def self.update
+    @frame_count += 1
   end
   
-  def freeze
+  def self.freeze
   end
   
-  def transition(duration=0,filename='',vague=40)
+  def self.transition(duration=0,filename='',vague=40)
   end
   
-  def frame_reset
+  def self.frame_reset
+    @frame_count = 0
   end
   
 end
