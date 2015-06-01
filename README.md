@@ -1,7 +1,8 @@
 # JML - RGSSEditor
 RGSS (1, 2, 3) Code Editor for RPGMakerXP, RPGMakerVX & RPGMakerVX Ace.
 
-This editor is intended to replace the (limited) built int editor of the RPG Maker series.
+This editor is intended to replace the (limited) built int editor of the RPG Maker series. 
+It's developed in ruby, and uses FXRuby for GUI, and FXGUI's Scintilla wrapper for the text editor.
 
 ## Main Features
 
@@ -14,3 +15,8 @@ This editor is intended to replace the (limited) built int editor of the RPG Mak
 - **[TODO] Error checking:** find quickly any "static" error (Syntax, UndefinedMethod, etc)
 
 
+## How to build
+
+1. Download and install ruby [https://www.ruby-lang.org/en/downloads/](https://www.ruby-lang.org/en/downloads/)
+2. Install the FXRuby gem [https://github.com/larskanis/fxruby](https://github.com/larskanis/fxruby)
+3. Execute main.rb
