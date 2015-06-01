@@ -1,4 +1,4 @@
-require_relative '../lib/JMLScriptEditor'
+require_relative '../lib/JackalScriptEditor'
 
  if not defined?(Ocra)
    run()
